@@ -24,7 +24,7 @@ public class ChangePasswordController {
     private TextField txtUserName;
 
     @FXML
-    public void handleOK(ActionEvent event){
+    public void handleOK(ActionEvent actionEvent){
         Connection connection = Database.connectDb();
         String username = txtUserName.getText();
         String password = txtPassword.getText();
@@ -51,20 +51,13 @@ public class ChangePasswordController {
             alert.setHeaderText(null);
             if (rowsAffected > 0) {
                 alert.setContentText("Your password changed successfully");
-
             } else {
                 alert.setContentText("No user found with the given username please enter a valid username.");
             }
             alert.showAndWait();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("student_page.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
 
             connection.close();
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setHeaderText(null);
             alert.setContentText("Error accessing the database please try again later");

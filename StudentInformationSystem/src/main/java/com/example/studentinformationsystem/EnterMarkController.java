@@ -16,7 +16,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.*;
+import java.util.ResourceBundle;
 
 public class EnterMarkController {
     Connection connection = null;
@@ -58,6 +60,16 @@ public class EnterMarkController {
 
     @FXML
     private TextField txtStudentID;
+
+
+    private String loggedInStudentId;
+    private String loggedInUsername;
+
+    public void setLoggedInUsername(String username) {
+        this.loggedInUsername = username;
+
+    }
+
     @FXML
     void handleBack(ActionEvent event) throws IOException {
         loader = new FXMLLoader(getClass().getResource("teacher_page.fxml"));
@@ -78,10 +90,19 @@ public class EnterMarkController {
         String student_id = txtStudentID.getText();
         String course_id = txtCourseID.getText();
         String markk = txtMark.getText();
+        String teacher_name = loggedInUsername;
 
         String studentID = null;
         int courseID = 0;
         double mark = 0;
+
+        if (!isTeacherAssignedToCourse(connection, teacher_name, Integer.parseInt(course_id))) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("You are not assigned to course with course_id " + course_id);
+            alert.showAndWait();
+            return;
+        }
 
 //        try {
         if (!isValidDataType(student_id, "varchar")) {
@@ -159,6 +180,18 @@ public class EnterMarkController {
 
     }
 
+    private static boolean isTeacherAssignedToCourse(Connection connection, String teacherId, int courseId) throws SQLException {
+        String query = "SELECT COUNT(*) FROM assign_teacher WHERE teacher_id = ? AND course_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, teacherId);
+        preparedStatement.setInt(2, courseId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        int count = resultSet.getInt(1);
+        resultSet.close();
+        preparedStatement.close();
+        return count > 0;
+    }
 
     // Check if a student with the given student_id exists in the database
     private static boolean isStudentExists(Connection connection, String studentId) throws SQLException {

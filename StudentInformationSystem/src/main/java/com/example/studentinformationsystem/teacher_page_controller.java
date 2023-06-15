@@ -18,10 +18,17 @@ public class teacher_page_controller {
     private Scene scene;
     private Parent root;
     private FXMLLoader loader;
+    private String loggedInUsername;
+    public void setLoggedInUsername(String username) {
+        this.loggedInUsername = username;
+    }
     @FXML
     void enterMark(ActionEvent event) throws IOException {
         loader = new FXMLLoader(getClass().getResource("enter_mark.fxml"));
         root = loader.load();
+        EnterMarkController enterMarkController = loader.getController();
+        enterMarkController.setLoggedInUsername(loggedInUsername);
+
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
@@ -37,17 +44,7 @@ public class teacher_page_controller {
         stage.show();
     }
     @FXML
-    void deleteMark(ActionEvent event) throws IOException {
-        loader = new FXMLLoader(getClass().getResource("manage_mark.fxml"));
-        root = loader.load();
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    @FXML
-    void updateMark(ActionEvent event) throws IOException {
+    void modifyMark(ActionEvent event) throws IOException {
         loader = new FXMLLoader(getClass().getResource("manage_mark.fxml"));
         root = loader.load();
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();

@@ -220,9 +220,13 @@ public class LoginController {
                     alert.showAndWait();
                 } else {
                     if (result.next()) {
+                        String currentUsername = getCurrentUsername();
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("teacher_page.fxml"));
                         root = loader.load();
                         stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                        teacher_page_controller teacher_page_controller = loader.getController();
+                        // Pass the currentUsername to the ViewGradeController
+                        teacher_page_controller.setLoggedInUsername(currentUsername);
                         scene = new Scene(root);
                         stage.setScene(scene);
                         stage.show();
